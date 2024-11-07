@@ -30,3 +30,18 @@ class RedactingFormatter(logging.Formatter):
         "Format log record and redact specified fields as required."
         return filter_datum(self.fields, self.REDACTION,
                             super().format(record), self.SEPARATOR)
+
+
+PII_FIELDS = ("name", "email", "password", "ssn", "phone")
+
+
+def get_logger() -> logging.Logger:
+    """Create and return a logger for user data with redacting formatter"""
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+    handler = logging.StreamHandler()
+    formatter = RedactingFormatter(fields=PII_FIELDS)
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    return logger
