@@ -34,8 +34,6 @@ class RedactingFormatter(logging.Formatter):
                             super().format(record), self.SEPARATOR)
 
 
-PII_FIELDS = ("name", "email", "password", "ssn", "phone")
-
 
 def get_logger() -> logging.Logger:
     """Create and return a logger for user data with redacting formatter"""
@@ -47,6 +45,9 @@ def get_logger() -> logging.Logger:
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     return logger
+
+
+PII_FIELDS = ("name", "email", "password", "ssn", "phone")
 
 
 def get_db() -> mysql.connector.connection.MYSQLConnection:
