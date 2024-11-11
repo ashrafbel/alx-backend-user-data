@@ -26,7 +26,6 @@ def stats() -> str:
     return jsonify(stats)
 
 
-
 @app_views.route('/unauthorized/', strict_slashes=False)
 def unauthorized() -> None:
     "Error handler for 401 Unauthorized"
