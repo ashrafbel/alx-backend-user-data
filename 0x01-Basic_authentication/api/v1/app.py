@@ -17,6 +17,9 @@ AUTH_TYPE = os.getenv("AUTH_TYPE")
 if AUTH_TYPE == "auth":
     from api.v1.auth.auth import Auth
     auth = Auth()
+elif AUTH_TYPE == "basic_auth":
+    from api.v1.auth.basic_auth import BasicAuth
+    auth = BasicAuth()
 
 
 @app.errorhandler(404)
@@ -43,10 +46,11 @@ def before_request():
     "Verifies a user's identity before handling a request"
     if auth is None:
         return None
-    excluded_paths = ['/api/v1/status/',
+    excluded_paths = [
+        '/api/v1/status/',
         '/api/v1/unauthorized/',
         '/api/v1/forbidden/',
-        ]
+    ]
     if request.path in excluded_paths:
         return None
     if not auth.require_auth(request.path, excluded_paths):
