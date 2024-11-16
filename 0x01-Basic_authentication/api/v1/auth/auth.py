@@ -14,16 +14,14 @@ class Auth:
         if not excluded_paths:
             return True
         normalized_path = path.rstrip("/")
-        for excluded_path in excluded_paths:
-            normalized_excluded_path = excluded_path.rstrip("/")
-            if normalized_excluded_path.endswith("*"):
-                if normalized_path.startswith(normalized_excluded_path[:-1]):
-                    return False
-            elif normalized_path == normalized_excluded_path:
-                return False
+        excluded_paths_normalized = [
+            excluded_path.rstrip("/") for excluded_path in excluded_paths
+        ]
+        if normalized_path in excluded_paths_normalized:
+            return False
         return True
 
-   def authorization_header(self, request=None) -> str:
+    def authorization_header(self, request=None) -> str:
         """ Method to retrieve the authorization header. """
         if request is None or 'Authorization' not in request.headers:
             return None
