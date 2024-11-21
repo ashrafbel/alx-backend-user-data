@@ -1,13 +1,11 @@
-#!/usr/bin/env python3
 """DB module
 """
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
-from sqlalchemy.exc import NoResultFound, InvalidRequestError
-from sqlalchemy.orm.exc import NoResultFound
 
+from user import Base
 from user import Base, User
 
 
@@ -32,9 +30,13 @@ class DB:
             self.__session = DBSession()
         return self.__session
 
+
     def add_user(self, email: str, hashed_password: str) -> User:
         """Adds a new user to the database"""
-        newUser = User(email=email, hashed_password=hashed_password)
-        self._session.add(newUser)
-        self._session.commit()
+        try:
+            newUser = User(email=email, hashed_password=hashed_password)
+            self._session.add(newUser)
+            self._session.commit()
+        except Exception:
+            session.rollback()
         return newUser
