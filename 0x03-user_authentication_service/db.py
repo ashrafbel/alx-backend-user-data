@@ -42,17 +42,22 @@ class DB:
             self._session.rollback()
             raise e
 
-def find_user_by(self, **kwargs) -> User:
-    """Find a user by arbitrary keyword arguments"""
-    try:
-        # Search for the user
-        user = self._session.query(User).filter_by(**kwargs).first()
-        if user is None:
-            raise NoResultFound(f"User not found with the criteria: {kwargs}")
+    def find_user_by(self, **kwargs: Dict[str, str]) -> User:
+        """Find a user by specified attributes.
+
+        Raises:
+            error: NoResultFound: When no results are found.
+            error: InvalidRequestError: When invalid query arguments are passed
+
+        Returns:
+            User: First row found in the `users` table.
+        """
+        session = self._session
+        try:
+            user = session.query(User).filter_by(**kwargs).one()
+        except NoResultFound:
+            raise NoResultFound()
+        except InvalidRequestError:
+            raise InvalidRequestError()
+        # print("Type of user: {}".format(type(user)))
         return user
-    except NoResultFound as e:
-        print(f"Error: {str(e)}")
-        return None  # Or return None if you prefer to continue after the failed search
-    except InvalidRequestError as e:
-        print(f"Invalid request error: {str(e)}")
-        raise
